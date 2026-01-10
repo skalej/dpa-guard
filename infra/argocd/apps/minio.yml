@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dpa-minio
+  namespace: argocd
+spec:
+  project: dpa-guard
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: minio
+    targetRevision: "17.0.21"
+    helm:
+      values: |
+        auth:
+          rootUser: minio
+          rootPassword: minio123456
+        defaultBuckets: dpa-guard
+        persistence:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dpa
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
