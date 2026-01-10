@@ -1,40 +1,52 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  # Name for the Argo CD application that will deploy Redis
   name: dpa-redis
+  # Deploy the application definition in the argocd namespace (Argo CD watches this namespace)
   namespace: argocd
 spec:
-  project: dpa-guard
+  # Use the default Argo CD project
+  project: default
   source:
+    # URL of the Bitnami Helm repository that contains the Redis chart
     repoURL: https://charts.bitnami.com/bitnami
+    # Name of the chart to deploy
     chart: redis
-    targetRevision: "17.9.3"
+    # Helm chart version. 24.1.0 was the most recent chart on Artifact Hub at the time of writing (Dec 18 2025)
+    targetRevision: 24.1.0
     helm:
+      # Name to use for the Helm release when Argo CD renders the chart
+      releaseName: redis
+      # Inline values that override the chart’s defaults
       values: |
-        global:
-          security:
-            allowInsecureImages: true
-
+        # Deploy a single, standalone Redis instance (no replicas)
         architecture: standalone
 
+        # Enable password authentication.  Replace the password below with a strong password or set
+        # `existingSecret` instead of `password` to reference a secret that already exists in your cluster.
         auth:
           enabled: false
 
+        # Persist the Redis data on a PersistentVolumeClaim.  Adjust the size and storage class to suit
+        # your local Kubernetes environment.
         master:
           persistence:
             enabled: false
 
-        image:
-          registry: docker.io
-          repository: bitnami/redis
-          tag: 7.0.10-debian-11-r4
-
+        # Uncomment the following block to enable metrics exporter if you use Prometheus
+        # metrics:
+        #   enabled: true
   destination:
+    # Deploy into the in‑cluster Kubernetes API (the cluster Argo CD is running in)
     server: https://kubernetes.default.svc
+    # Namespace where Redis resources will be created.  Argo CD will create the namespace if it doesn’t exist.
     namespace: dpa
+  # Configure automatic synchronization of the desired state
   syncPolicy:
     automated:
-      prune: true
-      selfHeal: true
+      prune: true      # Delete resources that are no longer tracked in Git
+      selfHeal: true   # Re‑apply out‑of‑sync resources automatically
+    # Create the destination namespace if it does not already exist
     syncOptions:
       - CreateNamespace=true
