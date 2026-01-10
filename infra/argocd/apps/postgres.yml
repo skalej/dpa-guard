@@ -8,16 +8,41 @@ spec:
   source:
     repoURL: https://charts.bitnami.com/bitnami
     chart: postgresql
-    targetRevision: 15.1.0
+    targetRevision: 18.2.0
     helm:
+      releaseName: postgresql    
       values: |
+        # Select the architecture.  The chart supports `standalone` or
+        # `replication`【367013556850396†L819-L825】; `standalone` is appropriate for
+        # a single instance while `replication` deploys a primary and read
+        # replicas.
+        architecture: standalone
+
+        # Authentication settings.  The chart allows you to specify a
+        # password for the built‑in "postgres" superuser using
+        # `auth.postgresPassword` and to create an additional user and
+        # database via `auth.username`, `auth.password` and
+        # `auth.database`【367013556850396†L747-L775】.  Setting
+        # `auth.enablePostgresUser` to true assigns the password to the
+        # postgres user; otherwise remote access is blocked【367013556850396†L747-L752】.
         auth:
           username: dpa
           password: dpa
           database: dpa_guard
+
+        # Persistence configuration for the primary server.  Enabling
+        # persistence instructs the chart to create a PersistentVolumeClaim
+        # and mount it at `/bitnami/postgresql`【367013556850396†L1587-L1605】.
+        # Adjust the `size` to allocate more or less storage【367013556850396†L1618-L1621】.
         primary:
           persistence:
             enabled: false
+
+        # If you set `architecture: replication`, you can configure
+        # replication parameters such as the number of read replicas using
+        # `readReplicas.replicaCount`【367013556850396†L1665-L1675】 and
+        # specify replication credentials with
+        # `auth.replicationUsername` and `auth.replicationPassword`【367013556850396†L777-L784】.
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: dpa
