@@ -25,7 +25,7 @@ spec:
 
         service:
           type: ClusterIP
-          
+
         image:
           registry: docker.io
           repository: bitnamilegacy/minio
@@ -36,6 +36,11 @@ spec:
           repository: bitnamilegacy/minio-client
           tag: 2025.7.21-debian-12-r2
 
+        console:
+          image:
+            registry: docker.io
+            repository: bitnamilegacy/minio-object-browser
+            tag: 2.0.2-debian-12-r3
   destination:
     server: https://kubernetes.default.svc
     namespace: dpa
