@@ -26,8 +26,8 @@ spec:
 
         image:
           registry: docker.io
-          repository: bitnamilegacy/redis
-          tag: 7.0.10-debian-11-r2
+          repository: bitnami/redis
+          tag: 7.0.10-debian-11-r4
 
   destination:
     server: https://kubernetes.default.svc
