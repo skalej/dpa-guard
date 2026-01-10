@@ -12,16 +12,23 @@ spec:
     helm:
       values: |
         global:
-          imageRegistry: docker.io      
-        image:
-          repository: bitnamilegacy/redis
-          tag: 7.0.10-debian-11-r4      
+          security:
+            allowInsecureImages: true
+
         architecture: standalone
+
         auth:
           enabled: false
+
         master:
           persistence:
             enabled: false
+
+        image:
+          registry: docker.io
+          repository: bitnamilegacy/redis
+          tag: 7.0.10-debian-11-r2
+
   destination:
     server: https://kubernetes.default.svc
     namespace: dpa
