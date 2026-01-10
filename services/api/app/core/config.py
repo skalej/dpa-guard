@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     database_host: str = "localhost"
     database_port: int = 5432
     database_name: str = "dpa_guard"
-    database_user: str = "postgres"
+    database_username: str = "dpa"
     database_password: str = ""  # must be provided via env/secret in non-local
 
     model_config = SettingsConfigDict(env_prefix="DPA_", case_sensitive=False)
