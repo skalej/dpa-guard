@@ -11,6 +11,11 @@ spec:
     targetRevision: "17.9.3"
     helm:
       values: |
+        global:
+          imageRegistry: docker.io      
+        image:
+          repository: bitnamilegacy/redis
+          tag: 7.0.10-debian-11-r4      
         architecture: standalone
         auth:
           enabled: false
