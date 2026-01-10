@@ -13,6 +13,8 @@ spec:
           image: dpa-guard-api:dev
           imagePullPolicy: IfNotPresent
           env:
+            - name: DPA_DATABASE_HOST
+              value: postgresql.dpa.svc.cluster.local          
             - name: DPA_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
