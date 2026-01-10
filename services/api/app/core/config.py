@@ -18,6 +18,6 @@ class Settings(BaseSettings):
     def database_url(self) -> str:
         # Encode password safely (handles special chars)
         pw = quote_plus(self.database_password) if self.database_password else ""
-        return f"postgresql+psycopg://{self.database_user}:{pw}@{self.database_host}:{self.database_port}/{self.database_name}"
+        return f"postgresql+psycopg://{self.database_username}:{pw}@{self.database_host}:{self.database_port}/{self.database_name}"
 
 settings = Settings()
