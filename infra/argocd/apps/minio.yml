@@ -12,36 +12,30 @@ spec:
     helm:
       releaseName: minio
       values: |
-        # Deploy a single‑node MinIO server (set to "distributed" for a
-        # multi‑node cluster).  The chart’s `mode` parameter controls
-        # whether MinIO runs as a standalone or distributed deployment【6419300269084†L621-L626】.
         mode: standalone
 
-        # Root user credentials for the MinIO server.  These values
-        # correspond to the `auth.rootUser` and `auth.rootPassword`
-        # parameters in the chart’s values file【6419300269084†L501-L506】.
         auth:
           rootUser: minio
           rootPassword: minio123456
 
-        # Create one or more buckets at initialization by setting
-        # `defaultBuckets`.  Provide a comma‑, semicolon‑ or space‑separated
-        # list.  Leave empty if you prefer to create buckets manually【6419300269084†L531-L533】.
         defaultBuckets: "dpa-guard"
 
-        # Persistent storage configuration.  Enabling persistence
-        # instructs the chart to create a PersistentVolumeClaim and mount
-        # it at `/bitnami/minio/data`【6419300269084†L367-L378】.  Adjust the
-        # storage size as required【6419300269084†L1387-L1396】.
         persistence:
           enabled: false
 
-        # Service exposure settings.  The `service.type` parameter controls
-        # how the MinIO API is exposed (ClusterIP, NodePort or LoadBalancer)
-        #【6419300269084†L1269-L1276】.  Choose LoadBalancer or NodePort if you
-        # need external access.
         service:
           type: ClusterIP
+          
+        image:
+          registry: docker.io
+          repository: bitnamilegacy/minio
+          tag: 2025.7.23-debian-12-r3
+
+        clientImage:
+          registry: docker.io
+          repository: bitnamilegacy/minio-client
+          tag: 2025.7.21-debian-12-r2
+
   destination:
     server: https://kubernetes.default.svc
     namespace: dpa
