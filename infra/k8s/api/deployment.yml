@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dpa-api
+  namespace: dpa
+  labels:
+    app: dpa-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dpa-api
+  template:
+    metadata:
+      labels:
+        app: dpa-api
+    spec:
+      containers:
+        - name: api
+          image: dpa-guard-api:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            - name: DPA_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-creds
+                  key: password
+            - name: DPA_DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-creds
+                  key: username
+            - name: DPA_MINIO_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: minio-creds
+                  key: rootUser
+            - name: DPA_MINIO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: minio-creds
+                  key: rootPassword
+
+      readinessProbe:
+        httpGet:
+          path: /health/ready
+          port: http
+        initialDelaySeconds: 10
+        periodSeconds: 10
+      livenessProbe:
+        httpGet:
+          path: /health/live
+          port: http
+        initialDelaySeconds: 10
+        periodSeconds: 10
+
+      resources:
+        requests:
+          memory: "128Mi"
+          cpu: "100m"
+        limits:
+          memory: "512Mi"
+          cpu: "500m"

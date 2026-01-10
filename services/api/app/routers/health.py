@@ -1,4 +1,7 @@
 from fastapi import APIRouter
+from sqlalchemy import text
+
+from services.api.app.db.session import SessionLocal
 
 router = APIRouter(tags=["Health"])
 
@@ -6,7 +9,11 @@ router = APIRouter(tags=["Health"])
 def live():
     return {"status": "ok"}
 
-@router.get("/health/ready", summary="Readiness Probe")
+@router.get("/health/ready")
 def ready():
-    # Step 1: always ready. In Step 2 we'll check DB/Redis/MinIO here.
-    return {"status": "ok"}
+    try:
+        with SessionLocal() as db:
+            db.execute(text("SELECT 1"))
+        return {"status": "ok"}
+    except Exception as e:
+        return {"status": "not_ready", "error": str(e)}

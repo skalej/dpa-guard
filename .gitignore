@@ -9,10 +9,15 @@ dist
 
 # Python
 .venv
-__pycache__
+venv/
+__pycache__/
 *.pyc
-.pytest_cache
-.mypy_cache
+*.pyo
+*.pyd
+build/
+dist/
+.eggs/
+*.egg-info
 
 # Env
 .env
