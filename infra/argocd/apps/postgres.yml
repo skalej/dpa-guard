@@ -15,10 +15,10 @@ spec:
         architecture: standalone
 
         auth:
-          username: DPA_DB_USER
-          password: DPA_DB_PASSWORD
+          username: dpa        
           database: dpa_guard
-          existingSecret: dpa-api-secrets
+          existingSecret: dpa-api-secrets          
+            userPasswordKey: DPA_DB_PASSWORD
 
         primary:
           persistence:
