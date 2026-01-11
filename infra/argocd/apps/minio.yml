@@ -16,8 +16,8 @@ spec:
 
         auth:
           existingSecret: dpa-api-secrets
-          rootUser: DPA_MINIO_USER
-          rootPassword: DPA_MINIO_PASSWORD
+          rootUserSecretKey: DPA_MINIO_USER
+          rootPasswordSecretKey: DPA_MINIO_PASSWORD
 
         defaultBuckets: "dpa-guard"
 
