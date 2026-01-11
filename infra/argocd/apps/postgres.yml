@@ -10,15 +10,17 @@ spec:
     chart: postgresql
     targetRevision: 18.2.0
     helm:
-      releaseName: postgresql    
+      releaseName: postgresql
       values: |
         architecture: standalone
 
         auth:
-          username: dpa        
+          username: dpa
           database: dpa_guard
-          existingSecret: dpa-api-secrets          
-            userPasswordKey: DPA_DB_PASSWORD
+          existingSecret: dpa-api-secrets
+          secretKeys:
+            adminPasswordKey: postgres-password
+            userPasswordKey: password
 
         primary:
           persistence:
