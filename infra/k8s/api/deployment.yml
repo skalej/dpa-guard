@@ -23,12 +23,16 @@ spec:
             - name: http
               containerPort: 8000
           env:
-            - name: DPA_DATABASE_PASSWORD
+            - name: DPA_DB_HOST
+              value: postgresql.dpa.svc.cluster.local
+            - name: DPA_DB_PORT
+              value: "5432"
+            - name: DPA_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-creds
                   key: password
-            - name: DPA_DATABASE_USERNAME
+            - name: DPA_DB_USER
               valueFrom:
                 secretKeyRef:
                   name: postgres-creds
