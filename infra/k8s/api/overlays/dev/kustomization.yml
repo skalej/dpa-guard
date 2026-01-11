@@ -7,7 +7,7 @@ resources:
 images:
   - name: dpa-guard-api
     newName: ghcr.io/skalej/dpa-guard-api
-    newTag: 5bef820
+    newTag: 78eef20
 
 patches:
   - target:
