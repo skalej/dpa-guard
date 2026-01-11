@@ -1,0 +1,83 @@
+name: Build and Push API Image (GHCR)
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "services/api/**"
+      - "infra/k8s/api/**"
+      - ".github/workflows/api-image.yml"
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build-push-and-bump-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image names
+        id: vars
+        run: |
+          OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          echo "owner_lc=$OWNER_LC" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$SHORT_SHA" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/$OWNER_LC/dpa-guard-api" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push API image
+        uses: docker/build-push-action@v6
+        with:
+          context: services/api
+          file: services/api/Dockerfile
+          push: true
+          tags: |
+            ${{ steps.vars.outputs.image }}:${{ steps.vars.outputs.short_sha }}
+            ${{ steps.vars.outputs.image }}:dev
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Update kustomize image tag (dev overlay)
+        run: |
+          FILE="infra/k8s/api/overlays/dev/kustomization.yml"
+          TAG="${{ steps.vars.outputs.short_sha }}"
+          if [ ! -f "$FILE" ]; then
+            echo "ERROR: $FILE not found"
+            exit 1
+          fi
+
+          # Replace newTag under the dpa-guard-api image block
+          # Works if you have the images: block as in step 1
+          sed -i -E "s|(name:\\s*dpa-guard-api([\\s\\S]*?)newTag:\\s*).*|\\1${TAG}|g" "$FILE" || true
+
+          # safer: if sed didn't change anything, do a simple fallback replacement of 'newTag: ...'
+          if ! grep -q "newTag: ${TAG}" "$FILE"; then
+            sed -i -E "s/(newTag:\\s*).*/\\1${TAG}/" "$FILE"
+          fi
+
+          echo "Updated kustomization.yml to newTag: ${TAG}"
+          cat "$FILE"
+
+      - name: Commit and push tag bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add infra/k8s/api/overlays/dev/kustomization.yml
+          git commit -m "chore(ci): bump api image tag to ${{ steps.vars.outputs.short_sha }}" || exit 0
+          git push
