@@ -10,8 +10,6 @@ spec:
     targetRevision: HEAD
     path: infra/k8s/api/overlays/dev # Change to 'overlays/prod' for production
     kustomize: {}
-    directory:
-      recurse: true
   destination:
     server: https://kubernetes.default.svc
     namespace: dpa
