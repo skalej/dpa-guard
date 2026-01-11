@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: dpa-api-config
   namespace: dpa
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 data:
   DPA_ENVIRONMENT: "local"
   

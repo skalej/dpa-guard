@@ -4,6 +4,7 @@ metadata:
   name: dpa-api-migrate
   namespace: dpa
   annotations:
+    argocd.argoproj.io/sync-wave: "0"
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
