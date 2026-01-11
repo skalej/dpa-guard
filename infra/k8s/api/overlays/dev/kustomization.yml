@@ -6,9 +6,9 @@ resources:
 
 images:
   - name: dpa-guard-api
-    newName: ghcr.io/skaleji/dpa-guard-api
+    newName: ghcr.io/skalej/dpa-guard-api
     newTag: dev
-    
+
 patches:
   - target:
       kind: ConfigMap
