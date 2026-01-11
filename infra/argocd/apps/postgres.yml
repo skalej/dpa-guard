@@ -16,10 +16,9 @@ spec:
 
         auth:
           username: DPA_DB_USER
+          password: DPA_DB_PASSWORD
           database: dpa_guard
           existingSecret: dpa-api-secrets
-          secretKeys:
-            userPasswordKey: "DPA_DB_PASSWORD"
 
         primary:
           persistence:
