@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/skalej/dpa-guard.git
     targetRevision: main
-    path: infra/k8s/api
+    path: infra/k8s/api/overlays/dev # Change to 'overlays/prod' for production
     directory:
       recurse: true
   destination:

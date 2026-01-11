@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dpa-api-migrate
+  namespace: dpa
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      initContainers:
+        - name: wait-db
+          image: postgres:14
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h "$DPA_DB_HOST" -U "$DPA_DB_USER" -p 5432; do
+                echo "waiting for database…";
+                sleep 2;
+              done
+          envFrom:
+            - secretRef:
+                name: dpa-api-secrets
+            - configMapRef:
+                name: dpa-api-config
+      containers:
+        - name: migrate
+          image: dpa-guard-api:dev
+          imagePullPolicy: IfNotPresent
+          command: ["alembic", "upgrade", "head"]
+          envFrom:
+            - secretRef:
+                name: dpa-api-secrets
+            - configMapRef:
+                name: dpa-api-config
+                          

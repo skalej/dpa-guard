@@ -15,9 +15,9 @@ spec:
         mode: standalone
 
         auth:
-          existingSecret: minio-creds
-          rootUser: rootUser
-          rootPassword: rootPassword
+          existingSecret: dpa-api-secrets
+          rootUser: DPA_MINIO_USER
+          rootPassword: DPA_MINIO_PASSWORD
 
         defaultBuckets: "dpa-guard"
 

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dpa-api-config
+  namespace: dpa
+data:
+  DPA_ENVIRONMENT: "local"
+  
+  DPA_DB_HOST: "localhost"
+  DPA_DB_PORT: "5432"
+
+  DPA_MINIO_ENDPOINT: "http://minio.dpa.svc.cluster.local:9000"
+  DPA_MINIO_SECURE: "false"
+  DPA_MINIO_BUCKET: "dpa-guard"

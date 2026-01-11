@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+patches:
+  - target:
+      kind: ConfigMap
+      name: dpa-api-config
+    patch: |-
+      - op: replace
+        path: /data/DPA_ENVIRONMENT
+        value: "prod"
+      - op: replace
+        path: /data/DPA_DB_HOST
+        value: "db_host"
+      - op: replace
+        path: /data/DPA_MINIO_SECURE
+        value: "true"
+
+  - target:
+      kind: Deployment
+      name: dpa-api
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2

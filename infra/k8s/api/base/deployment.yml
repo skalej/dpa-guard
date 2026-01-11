@@ -22,31 +22,11 @@ spec:
           ports:
             - name: http
               containerPort: 8000
-          env:
-            - name: DPA_DB_HOST
-              value: postgresql.dpa.svc.cluster.local
-            - name: DPA_DB_PORT
-              value: "5432"
-            - name: DPA_DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-creds
-                  key: password
-            - name: DPA_DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-creds
-                  key: username
-            - name: DPA_MINIO_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: minio-creds
-                  key: rootUser
-            - name: DPA_MINIO_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: minio-creds
-                  key: rootPassword
+          envFrom:
+            - configMapRef:
+                name: dpa-api-config
+            - secretRef:
+                name: dpa-api-secrets
 
       readinessProbe:
         httpGet:
