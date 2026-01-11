@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: dpa-guard-api:dev
+          image: dpa-guard-api
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
